@@ -17,8 +17,14 @@ setup(
     ],
     keywords="autdh automatic dh denavit-hartenberg robotics robot",
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests", "tests.*"]),
     install_requires=[
         "numpy",
     ],
+    extras_require={
+        "test": [
+            "pytest",
+            "pytest-mock",
+        ],
+    },
 )
