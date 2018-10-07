@@ -91,6 +91,14 @@ def point_on_line(p, c, e):
     return np.isclose(np.abs(e.dot(c2p)), 1)
 
 
+def check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2):
+    assert np.isclose(np.linalg.norm(cp), 1), "common perpendicular must be normalized"
+    assert np.allclose(e1.dot(cp), 0), "common perpendicular must be orthogonal to line 1"
+    assert np.allclose(e2.dot(cp), 0), "common perpendicular must be orthogonal to line 2"
+    assert point_on_line(p1, c1, e1), "p1 must be on line 1"
+    assert point_on_line(p2, c2, e2), "p2 must be on line 2"
+
+
 @pytest.mark.parametrize("force_zero_point", [True, False])
 @pytest.mark.parametrize("repeat", range(10))
 def test_skewed_lines(force_zero_point, repeat):
@@ -99,11 +107,7 @@ def test_skewed_lines(force_zero_point, repeat):
     k2 = np.cross(c2, e2)
 
     cp, p1, p2 = math_utils.skewed_lines(e1, k1, e2, k2)
-    assert np.isclose(np.linalg.norm(cp), 1), "common perpendicular must be normalized"
-    assert np.allclose(e1.dot(cp), 0), "common perpendicular must be orthogonal to line 1"
-    assert np.allclose(e2.dot(cp), 0), "common perpendicular must be orthogonal to line 2"
-    assert point_on_line(p1, c1, e1), "p1 must be on line 1"
-    assert point_on_line(p2, c2, e2), "p2 must be on line 2"
+    check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2)
 
 
 @pytest.mark.parametrize("force_zero_point", [True, False])
@@ -114,11 +118,7 @@ def test_intersecting_lines(force_zero_point, repeat):
     k2 = np.cross(c2, e2)
 
     cp, p1, p2 = math_utils.intersecting_lines(e1, k1, e2, k2)
-    assert np.isclose(np.linalg.norm(cp), 1), "common perpendicular must be normalized"
-    assert np.allclose(e1.dot(cp), 0), "common perpendicular must be orthogonal to line 1"
-    assert np.allclose(e2.dot(cp), 0), "common perpendicular must be orthogonal to line 2"
-    assert point_on_line(p1, c1, e1), "p1 must be on line 1"
-    assert point_on_line(p2, c2, e2), "p2 must be on line 2"
+    check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2)
 
     assert np.allclose(p1, p2), "p1 and p2 must be equal"
 
@@ -129,11 +129,7 @@ def test_parallel_nonidentical_lines(repeat):
     k2 = np.cross(c2, e2)
 
     cp, p1, p2 = math_utils.parallel_nonidentical_lines(c1, c2, e1, e2, k2)
-    assert np.isclose(np.linalg.norm(cp), 1), "common perpendicular must be normalized"
-    assert np.allclose(e1.dot(cp), 0), "common perpendicular must be orthogonal to line 1"
-    assert np.allclose(e2.dot(cp), 0), "common perpendicular must be orthogonal to line 2"
-    assert point_on_line(p1, c1, e1), "p1 must be on line 1"
-    assert point_on_line(p2, c2, e2), "p2 must be on line 2"
+    check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2)
 
 
 def test_common_perpendicular_and_intersection_points(mocker):
@@ -177,10 +173,18 @@ def test_common_perpendicular_and_intersection_points(mocker):
     assert skewed_lines.call_count == 1
     assert intersecting_lines.call_count == 1
     assert parallel_nonidentical_lines.call_count == 1
-    assert np.isclose(np.linalg.norm(cp), 1), "common perpendicular must be normalized"
-    assert np.allclose(e1.dot(cp), 0), "common perpendicular must be orthogonal to line 1"
-    assert np.allclose(e2.dot(cp), 0), "common perpendicular must be orthogonal to line 2"
-    assert point_on_line(p1, c1, e1), "p1 must be on line 1"
-    assert point_on_line(p2, c2, e2), "p2 must be on line 2"
+    check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2)
+
+    assert np.allclose(p1, p2), "p1 and p2 must be equal"
+
+
+def test_intersecting_lines_edge_case():
+    e1 = np.array([1., 0., 0.])
+    e2 = np.array([0., 0., 1.])
+    c1 = c2 = np.array([1., 0., 1.])
+    k1 = np.cross(c1, e1)
+    k2 = np.cross(c2, e2)
+    cp, p1, p2 = math_utils.intersecting_lines(e1, k1, e2, k2)
+    check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2)
 
     assert np.allclose(p1, p2), "p1 and p2 must be equal"

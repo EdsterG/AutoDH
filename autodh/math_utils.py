@@ -7,6 +7,9 @@ def skewed_lines(e1, k1, e2, k2):
     and compute the points p1, and p2 where the common perpendicular
     intersects with line 1 and line 2 respectively
 
+    Note, this is an alternative implementation based on equations (20) and (21)
+    from the following handout, http://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
+
     :param e1: direction vector of first line, as numpy array with shape (3,)
     :param k1: moment vector of first line, as numpy array with shape (3,)
     :param e2: direction vector of second line, as numpy array with shape (3,)
@@ -14,17 +17,19 @@ def skewed_lines(e1, k1, e2, k2):
     :returns: (common perpendicular, p1, p2), all three as numpy arrays with shape (3,)
     """
     n = np.cross(e1, e2)
-    n /= np.linalg.norm(n)
-    beta = np.arccos(e1.dot(e2))
-    p1 = (k2.dot(n) - np.cos(beta) * k1.dot(n)) / np.sin(beta) * e1 + np.cross(e1, k1)
-    p2 = (- k1.dot(n) + np.cos(beta) * k2.dot(n)) / np.sin(beta) * e2 + np.cross(e2, k2)
-    return n, p1, p2
+    norm = np.linalg.norm(n)
+    p1 = (-np.cross(k1, np.cross(e2, n)) + k2.dot(n) * e1) / norm**2
+    p2 = (np.cross(k2, np.cross(e1, n)) - k1.dot(n) * e2) / norm**2
+    return n / norm, p1, p2
 
 
 def intersecting_lines(e1, k1, e2, k2):
     """Given two intersecting lines in Plücker coordinates, find the common
     perpendicular and compute the point of intersection between line 1 and line 2
 
+    Note, this is an alternative implementation based on equation (29) from
+    the following handout, http://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
+
     :param e1: direction vector of first line, as numpy array with shape (3,)
     :param k1: moment vector of first line, as numpy array with shape (3,)
     :param e2: direction vector of second line, as numpy array with shape (3,)
@@ -32,17 +37,10 @@ def intersecting_lines(e1, k1, e2, k2):
     :returns: (common perpendicular, p1, p2), all three as numpy arrays with shape (3,)
     """
     n = np.cross(e1, e2)
-    n /= np.linalg.norm(n)
-    if np.allclose(k1, 0) or np.allclose(k2, 0):
-        origin_g = n
-        e1_g = e1
-        k1_g = k1 - np.cross(origin_g, e1)
-        k2_g = k2 - np.cross(origin_g, e2)
-        p_g = np.cross(k2_g, k1_g) / e1_g.dot(k2_g)
-        p = origin_g + p_g
-    else:
-        p = np.cross(k2, k1) / e1.dot(k2)
-    return n, p, p
+    norm = np.linalg.norm(n)
+    p_temp = k1.dot(e2) * np.eye(3) + np.outer(e1, k2) - np.outer(e2, k1)
+    p = (p_temp).dot(n / norm**2)
+    return n / norm, p, p
 
 
 def parallel_nonidentical_lines(c1, c2, e1, e2, k2):
