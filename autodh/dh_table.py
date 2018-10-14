@@ -1,10 +1,12 @@
+from enum import Enum
+
 import numpy as np
 
 from .joint import Joint
 
 
-def _dh_row_to_matrix(a, alpha, d, theta):
-    """Create matrix from row in DH table
+def _standard_dh_row_to_matrix(a, alpha, d, theta):
+    """Create matrix from row in DH table, standard convention
     """
     mat = np.eye(4)
     mat[:3, 0] = [+np.cos(theta), +np.sin(theta), 0]
@@ -14,11 +16,27 @@ def _dh_row_to_matrix(a, alpha, d, theta):
     return mat
 
 
+def _modified_dh_row_to_matrix(a, alpha, d, theta):
+    """Create matrix from row in DH table, modified convention
+    """
+    mat = np.eye(4)
+    mat[:3, 0] = [+np.cos(theta), np.sin(theta) * np.cos(alpha), np.sin(theta) * np.sin(alpha)]
+    mat[:3, 1] = [-np.sin(theta), np.cos(theta) * np.cos(alpha), np.cos(theta) * np.sin(alpha)]
+    mat[:3, 2] = [0, -np.sin(alpha), np.cos(alpha)]
+    mat[:3, 3] = [a, -d * np.sin(alpha), d * np.cos(alpha)]
+    return mat
+
+
 class DHTable:
 
-    def __init__(self, d, theta, a, alpha, joint_types):
+    class Convention(Enum):
+        Standard = 0
+        Modified = 1
+
+    def __init__(self, d, theta, a, alpha, joint_types, convention):
         self._dh = np.array([d, theta, a, alpha]).T
         self._jt = list(joint_types)
+        self._convention = convention
         self._num_dof = sum([x != Joint.Type.Fixed for x in self._jt])
 
     def forward(self, dof_values):
@@ -32,5 +50,8 @@ class DHTable:
             elif jt is Joint.Type.Prismatic:
                 d += dof_values[i]
                 i += 1
-            mat = mat.dot(_dh_row_to_matrix(a, alpha, d, theta))
+            if self._convention is DHTable.Convention.Modified:
+                mat = mat.dot(_modified_dh_row_to_matrix(a, alpha, d, theta))
+            else:
+                mat = mat.dot(_standard_dh_row_to_matrix(a, alpha, d, theta))
         return mat

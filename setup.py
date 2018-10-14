@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="AutoDH",
-    version="0.1a1",
+    version="0.2",
     author="Eddie Groshev",
     description="Library for automatic extraction of Denavit-Hartenberg parameters",
     long_description=long_description,
