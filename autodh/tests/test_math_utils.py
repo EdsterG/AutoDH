@@ -98,6 +98,11 @@ def check_common_perpendicular_and_points(cp, p1, p2, c1, e1, c2, e2):
     assert point_on_line(p1, c1, e1), "p1 must be on line 1"
     assert point_on_line(p2, c2, e2), "p2 must be on line 2"
 
+    if not np.allclose(p1, p2):
+        m = p2 - p1
+        m /= np.linalg.norm(m)
+        assert np.allclose(cp, m)
+
 
 @pytest.mark.parametrize("force_zero_point", [True, False])
 @pytest.mark.parametrize("repeat", range(10))

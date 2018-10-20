@@ -20,6 +20,7 @@ def skewed_lines(e1, k1, e2, k2):
     norm = np.linalg.norm(n)
     p1 = (-np.cross(k1, np.cross(e2, n)) + k2.dot(n) * e1) / norm**2
     p2 = (np.cross(k2, np.cross(e1, n)) - k1.dot(n) * e2) / norm**2
+    n *= np.sign(n.dot(p2 - p1))  # direction of common perpendicular should be from p1 to p2
     return n / norm, p1, p2
 
 
