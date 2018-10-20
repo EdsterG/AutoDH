@@ -1,12 +1,8 @@
-import logging
-
 import numpy as np
 
 from . import math_utils
 from .dh_table import DHTable
 from .joint import Joint
-
-logger = logging.getLogger(__name__)
 
 
 def _compute_row_in_standard_dh_table(z1, x1, o1, z2, x2, o2):
