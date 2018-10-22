@@ -20,6 +20,7 @@ setup(
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests", "tests.*"]),
     install_requires=[
         "numpy",
+        "prettytable",
     ],
     extras_require={
         "test": [

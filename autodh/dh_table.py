@@ -1,6 +1,7 @@
 from enum import Enum
 
 import numpy as np
+from prettytable import PrettyTable
 
 from .joint import Joint
 
@@ -55,3 +56,15 @@ class DHTable:
             else:
                 mat = mat.dot(_standard_dh_row_to_matrix(a, alpha, d, theta))
         return mat
+
+    def __str__(self):
+        table = PrettyTable()
+        for i, field_name in enumerate(["d", "theta", "a", "alpha"]):
+            if field_name in ['d', 'a']:
+                column = self._dh[:, i] * 1000
+            else:
+                column = np.rad2deg(self._dh[:, i])
+            table.add_column(field_name, column)
+            table.float_format[field_name] = " 8.2"
+        table.add_column("type", [jt.name for jt in self._jt])
+        return str(table)
