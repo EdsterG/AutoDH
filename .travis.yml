@@ -13,8 +13,19 @@ install:
 
 # command to run tests
 script:
-  - pytest
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then
+        pytest
+          -s -vvv
+          --cov-report="term-missing:skip-covered"
+          --no-cov-on-fail
+          --cov-branch
+          --cov="autodh";
+    else
+        pytest -s -vvv;
+    fi
 
 after_success:
     # submit code coverage information to coveralls
-    - coveralls
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then
+          coveralls;
+      fi
