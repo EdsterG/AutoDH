@@ -45,8 +45,7 @@ def main(robot_path, base_link_name, ee_link_name, enable_viewer):
         axis = j.GetAxis()
         anchor = j.GetAnchor()
         joint_type = Rave2AutoDH[j.GetType()]
-        value = j.GetValues()[0]
-        joints.append(Joint(axis, anchor, joint_type, value))
+        joints.append(Joint(axis, anchor, joint_type))
 
     # Get base and ee frames
     base_frame = base_link.GetTransform()
