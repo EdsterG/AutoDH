@@ -8,8 +8,13 @@ python:
 
 # command to install dependencies
 install:
+  - pip install coveralls
   - pip install .[test]
 
 # command to run tests
 script:
   - pytest
+
+after_success:
+    # submit code coverage information to coveralls
+    - coveralls
