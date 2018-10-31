@@ -1,4 +1,6 @@
-# AutoDH
+## AutoDH
+
+[![Build Status](https://travis-ci.org/EdsterG/AutoDH.svg?branch=master)](https://travis-ci.org/EdsterG/AutoDH)
 
 A library for automatic extraction of Denavit-Hartenberg parameters from a robot model.
 
