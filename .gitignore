@@ -1,3 +1,13 @@
+# Byte-compiled files
 *.pyc
-*.DS_Store
+
+# Packaging
+build
+dist
 *.egg-info
+
+# Coverage
+.coverage
+
+# OSX
+*.DS_Store
