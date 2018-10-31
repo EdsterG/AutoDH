@@ -7,6 +7,7 @@ setup(
     name="AutoDH",
     version="0.2",
     author="Eddie Groshev",
+    url="https://github.com/edsterg/autodh",
     description="Library for automatic extraction of Denavit-Hartenberg parameters",
     long_description=long_description,
     long_description_content_type="text/markdown",
