@@ -20,6 +20,7 @@ setup(
     license="MIT",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests", "tests.*"]),
     install_requires=[
+        "click",
         "numpy",
         "prettytable",
     ],
