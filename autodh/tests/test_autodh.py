@@ -18,6 +18,10 @@ def sample_transform_matrix():
     return t
 
 
+def test_dh_to_str_doesnt_crash():
+    str(DHTable([0.001], [0], [0.002], [np.pi], [Joint.Type.Fixed], DHTable.Convention.Standard))
+
+
 @pytest.mark.parametrize("repeat", range(10))
 @pytest.mark.parametrize("convention", DHTable.Convention)
 def test_identity_base_to_random_endeffector(repeat, convention):
