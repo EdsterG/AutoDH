@@ -16,7 +16,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
     ],
-    keywords="autdh automatic dh denavit-hartenberg robotics robot",
+    keywords="autdh automatic dh denavit-hartenberg robotics robot kinematics ik fk inverse forward",
     license="MIT",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests", "tests.*"]),
     install_requires=[
